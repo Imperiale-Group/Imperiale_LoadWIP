@@ -1,0 +1,39 @@
+{
+    "id": "b1a8e2f3-4c5d-6e7f-8a9b-0c1d2e3f4a5b",
+    "name": "Imperiale_LoadWIP",
+    "publisher": "Autocarrozzeria Imperiale SRL",
+    "version": "1.0.0.0",
+    "brief": "",
+    "description": "",
+    "privacyStatement": "",
+    "EULA": "",
+    "help": "",
+    "url": "",
+    "logo": "",
+    "screenshots": [],
+    "platform": "22.0.0.0",
+    "application": "22.0.0.0",
+    "dependencies": [
+        {
+            "id": "d69910ee-fa39-40d8-9438-5cb882848cb6",
+            "publisher": "Cloudsurfers S.R.L.",
+            "name": "WIP_EDI",
+            "version": "1.3.0.0"
+        }
+    ],
+    "idRanges": [
+        {
+            "from": 79400,
+            "to": 79449
+        }
+    ],
+    "resourceExposurePolicy": {
+        "allowDebugging": true,
+        "allowDownloadingSource": true,
+        "includeSourceInSymbolFile": true
+    },
+    "runtime": "12.1",
+    "features": [
+        "NoImplicitWith"
+    ]
+}
