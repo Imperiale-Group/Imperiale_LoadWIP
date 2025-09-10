@@ -20,6 +20,11 @@ table 79400 LoadWIP
         {
             Caption = 'Data Carico';
         }
+        field(5; ItemNo; Code[20])
+        {
+            Caption = 'Item No.';
+            TableRelation = Item;
+        }
 
     }
 
