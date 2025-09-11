@@ -10,6 +10,22 @@ table 79400 LoadWIP
         field(2; SerialNo; Code[50])
         {
             Caption = 'Serial No.';
+            trigger OnValidate()
+            var
+                Item: Record Item;
+                SNInfo: Record "Serial No. Information";
+                PackageInfo: Record "Package No. Information";
+            begin
+                SNInfo.Reset();
+                SNInfo.SetRange("Serial No.", Rec.SerialNo);
+                //SNInfo.SetRange("Job Number", Commessa);
+                SNInfo.SetFilter("Variant Code", '<>%1', '');
+                if SNInfo.FindFirst() then begin
+                    Rec.ItemNo := SNInfo."Item No.";
+                    Rec.Modify();
+                end;
+            end;
+
         }
         field(3; Commessa; Code[50])
         {

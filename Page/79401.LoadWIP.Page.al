@@ -22,6 +22,10 @@ page 79401 LoadWIP_2
                 begin
                     Rec.Reset();
                     Rec.SetRange(Commessa, Commessa);
+                    if Rec.FindSet() then
+                        repeat
+                            Rec.Validate(SerialNo);
+                        until Rec.Next() = 0;
                     CurrPage.Update(false);
                 end;
             }
@@ -51,26 +55,7 @@ page 79401 LoadWIP_2
                     ExtendedDatatype = Barcode;
 
                     trigger OnValidate()
-                    var
-                        Item: Record Item;
-                        SNInfo: Record "Serial No. Information";
-                        PackageInfo: Record "Package No. Information";
                     begin
-                        if CopyStr(Rec.Lot, 1, 2) = 'SN' then begin
-                            SNInfo.Reset();
-                            SNInfo.SetRange("Serial No.", Rec.Lot);
-                            SNInfo.SetRange("Job Number", Commessa);
-                            if SNInfo.FindFirst() then begin
-                                Rec.ItemNo := SNInfo."Item No.";
-                            end;
-                        end
-                        else begin
-                            PackageInfo.Reset();
-                            PackageInfo.SetRange("Package No.", Rec.Lot);
-                            if PackageInfo.FindFirst() then begin
-                                Rec.ItemNo := PackageInfo."Item No.";
-                            end;
-                        end;
                         Rec.Commessa := Commessa;
                         Rec.DateTime := CurrentDateTime;
                         Rec.Modify();
