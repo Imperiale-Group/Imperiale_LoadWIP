@@ -71,6 +71,11 @@ page 79401 LoadWIP_2
         CurrPage.Update(false);
     end;
 
+    trigger OnNewRecord(BelowxRec: Boolean)
+    begin
+        Rec.Commessa := Commessa;
+    end;
+
     var
         Commessa: Code[20];
 
