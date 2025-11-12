@@ -22,7 +22,7 @@ table 79400 LoadWIP
                 SNInfo.SetFilter("Variant Code", '<>%1', '');
                 if SNInfo.FindFirst() then begin
                     Rec.ItemNo := SNInfo."Item No.";
-                    Rec.Modify();
+                    //Rec.Modify();
                 end;
             end;
 
