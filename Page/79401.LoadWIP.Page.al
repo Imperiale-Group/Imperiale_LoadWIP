@@ -58,22 +58,24 @@ page 79401 LoadWIP_2
                     var
                         PackageNoInfo: Record "Package No. Information";
                     begin
-                        PackageNoInfo.Reset();
-                        PackageNoInfo.SetRange("Package No.", Rec.Lot);
-                        if PackageNoInfo.FindFirst() then begin
-                            if (PackageNoInfo."Item No." <> Rec.ExpectedItemNo) and (Rec.ExpectedItemNo > '') then begin
-                                if not Dialog.Confirm('Il collo %1 dell''articolo %2 non corrisponde all''articolo previsto %3. Confermare?', false, Rec.Lot, PackageNoInfo."Item No.", Rec.ExpectedItemNo) then begin
+                        if Rec.Lot <> '' then begin
+                            PackageNoInfo.Reset();
+                            PackageNoInfo.SetRange("Package No.", Rec.Lot);
+                            if PackageNoInfo.FindFirst() then begin
+                                if (PackageNoInfo."Item No." <> Rec.ExpectedItemNo) and (Rec.ExpectedItemNo > '') then begin
+                                    if not Dialog.Confirm('Il collo %1 dell''articolo %2 non corrisponde all''articolo previsto %3. Vuoi proseguire comunque?', false, Rec.Lot, PackageNoInfo."Item No.", Rec.ExpectedItemNo) then begin
+                                        Rec.Lot := '';
+                                        Rec.Modify();
+                                        exit;
+                                    end;
+                                end;
+                            end
+                            else begin
+                                if not Dialog.Confirm('Il collo %1 non è stato registrato. Vuoi proseguire comunque?', false, Rec.Lot) then begin
                                     Rec.Lot := '';
                                     Rec.Modify();
                                     exit;
                                 end;
-                            end;
-                        end
-                        else begin
-                            if not Dialog.Confirm('Il collo %1 non è stato registrato. Confermare?', false, Rec.Lot) then begin
-                                Rec.Lot := '';
-                                Rec.Modify();
-                                exit;
                             end;
                         end;
                         Rec.Commessa := Commessa;
