@@ -78,7 +78,8 @@ page 79401 LoadWIP_2
                                 end;
                             end;
                         end;
-                        Rec.Commessa := Commessa;
+                        if Commessa > '' then
+                            Rec.Commessa := Commessa;
                         Rec.DateTime := CurrentDateTime;
                         Rec.Modify();
                     end;
