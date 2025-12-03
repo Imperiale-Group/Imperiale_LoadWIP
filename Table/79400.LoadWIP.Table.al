@@ -41,6 +41,11 @@ table 79400 LoadWIP
             Caption = 'Item No.';
             TableRelation = Item;
         }
+        field(6; ExpectedItemNo; Code[20])
+        {
+            Caption = 'Expected Item No.';
+            TableRelation = Item;
+        }
 
     }
 
