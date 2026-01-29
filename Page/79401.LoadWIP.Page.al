@@ -57,6 +57,7 @@ page 79401 LoadWIP_2
                     trigger OnValidate()
                     var
                         PackageNoInfo: Record "Package No. Information";
+                        OlderPackageNo: Code[20];
                     begin
                         if Rec.Lot <> '' then begin
                             PackageNoInfo.Reset();
@@ -64,6 +65,15 @@ page 79401 LoadWIP_2
                             if PackageNoInfo.FindFirst() then begin
                                 if (PackageNoInfo."Item No." <> Rec.ExpectedItemNo) and (Rec.ExpectedItemNo > '') then begin
                                     if not Dialog.Confirm('Il collo %1 dell''articolo %2 non corrisponde all''articolo previsto %3. Vuoi proseguire comunque?', false, Rec.Lot, PackageNoInfo."Item No.", Rec.ExpectedItemNo) then begin
+                                        Rec.Lot := '';
+                                        Rec.Modify();
+                                        exit;
+                                    end;
+                                end;
+                                // Controllo se esistono colli meno recenti
+                                OlderPackageNo := ExistsOlderPackage(Rec.Lot);
+                                if OlderPackageNo <> '' then begin
+                                    if not Dialog.Confirm('Attenzione: è disponbile al prelievo un collo meno recente: %1. Vuoi proseguire comunque?', false, OlderPackageNo) then begin
                                         Rec.Lot := '';
                                         Rec.Modify();
                                         exit;
@@ -108,6 +118,40 @@ page 79401 LoadWIP_2
     begin
         if Item.Get(ItemNo) then
             exit(Item.Description);
+        exit('');
+    end;
+
+    local procedure ExistsOlderPackage(PackageNo: Code[20]): Code[20]
+    var
+        LoadWIP: Record "LoadWIP";
+        SelectedPackage: Record "Package No. Information";
+        SelectedPackageDate: Date;
+        ILE: Record "Item Ledger Entry";
+        StartDate: Date;
+    begin
+        StartDate := DMY2Date(1, 11, 2025); // data inizio check
+        SelectedPackage.SetRange("Package No.", PackageNo);
+        SelectedPackage.FindFirst();
+        ILE.Reset();
+        ILE.SetRange("Item No.", SelectedPackage."Item No.");
+        ILE.SetRange("Entry Type", ILE."Entry Type"::"Positive Adjmt.");
+        ILE.SetRange("Package No.", SelectedPackage."Package No.");
+        ILE.FindFirst();
+        SelectedPackageDate := ILE."Posting Date";
+
+        ILE.Reset();
+        ILE.SetRange("Item No.", SelectedPackage."Item No.");
+        ILE.SetRange("Entry Type", ILE."Entry Type"::"Positive Adjmt.");
+        ILE.SetRange("Posting Date", StartDate, SelectedPackageDate - 1);
+        ILE.SetCurrentKey("Package No.", "Posting Date");
+        ILE.SetAscending("Posting Date", true);
+        if ILE.FindSet() then
+            repeat
+                LoadWIP.Reset();
+                LoadWIP.SetRange(Lot, ILE."Package No.");
+                if LoadWIP.Count < ILE.Quantity then
+                    exit(ILE."Package No.");
+            until ILE.Next() = 0;
         exit('');
     end;
 }
