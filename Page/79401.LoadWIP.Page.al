@@ -59,7 +59,11 @@ page 79401 LoadWIP_2
                         PackageNoInfo: Record "Package No. Information";
                         OlderPackageNo: Code[20];
                     begin
-                        if Rec.Lot <> '' then begin
+                        if Rec.Lot = 'CHK-SERIALE'
+                        then begin
+                            Rec.Lot := Rec.SerialNo;
+                        end
+                        else if Rec.Lot <> '' then begin
                             PackageNoInfo.Reset();
                             PackageNoInfo.SetRange("Package No.", Rec.Lot);
                             if PackageNoInfo.FindFirst() then begin
@@ -136,8 +140,10 @@ page 79401 LoadWIP_2
         ILE.SetRange("Item No.", SelectedPackage."Item No.");
         ILE.SetRange("Entry Type", ILE."Entry Type"::"Positive Adjmt.");
         ILE.SetRange("Package No.", SelectedPackage."Package No.");
-        ILE.FindFirst();
-        SelectedPackageDate := ILE."Posting Date";
+        if ILE.FindFirst() then
+            SelectedPackageDate := ILE."Posting Date"
+        else
+            exit('');
 
         ILE.Reset();
         ILE.SetRange("Item No.", SelectedPackage."Item No.");
