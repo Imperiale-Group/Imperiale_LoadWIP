@@ -8,6 +8,7 @@ page 79401 LoadWIP_2
     Caption = 'Caricamento Carrello 2';
     SourceTable = LoadWIP;
     InsertAllowed = true;
+    DeleteAllowed = false;
 
     layout
     {
