@@ -37,17 +37,20 @@ page 79400 LoadWIP_2
                 {
                     Caption = 'Seriale';
                     ExtendedDatatype = Barcode;
+                    StyleExpr = StyleExpr;
                     //Editable = Rec.SerialNo = '';
                 }
                 field(ItemNo; Rec.ItemNo)
                 {
                     Caption = 'Nr. Articolo';
                     TableRelation = Item;
+                    StyleExpr = StyleExpr;
                 }
                 field(Description; GetItemDescription(Rec.ItemNo))
                 {
                     Caption = 'Descrizione';
                     Editable = false;
+                    StyleExpr = StyleExpr;
                 }
                 field(Collo; Rec.Lot)
                 {
@@ -114,8 +117,14 @@ page 79400 LoadWIP_2
         Rec.Commessa := Commessa;
     end;
 
+    trigger OnAfterGetRecord()
+    begin
+        StyleExpr := SetStatusStyle();
+    end;
+
     var
         Commessa: Code[20];
+        StyleExpr: Text;
 
     local procedure GetItemDescription(ItemNo: Code[20]): Text[100]
     var
@@ -160,5 +169,11 @@ page 79400 LoadWIP_2
                     exit(ILE."Package No.");
             until ILE.Next() = 0;
         exit('');
+    end;
+
+    local procedure SetStatusStyle() Style: Text[50]
+    begin
+        if Rec.Lot = '' then
+            exit('Unfavorable');
     end;
 }
